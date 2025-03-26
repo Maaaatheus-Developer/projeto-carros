@@ -175,7 +175,7 @@ export function New() {
               className="absolute"
               onClick={() => handleDeleteImage(item)}
             >
-              <FiTrash size={28} color="black" />
+              <FiTrash size={28} color="#FFF" />
             </button>
             <img
               src={item.previewUrl}
