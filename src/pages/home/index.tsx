@@ -1,6 +1,39 @@
 import { Container } from "../../components/container";
+import { useState, useEffect } from "react";
+import { collection, query, getDocs, orderBy } from "firebase/firestore";
+import { db } from "../../services/firebaseConnection";
 
 export function Home() {
+  interface CarsProps {
+    id: string;
+    name: string;
+    year: string;
+    uid: string;
+    price: string | number;
+    city: string;
+    km: string;
+    images: CarImageProps[];
+  }
+
+  interface CarImageProps {
+    name: string;
+    uid: string;
+    url: string;
+  }
+
+  const [cars, setCars] = useState<CarsProps[]>([]);
+
+  useEffect(() => {
+    function loadCars() {
+      const carsRef = collection(db, "cars");
+      const queryRef = query(carsRef, orderBy("created", "desc"));
+      getDocs(queryRef).then((snapshot) => {
+        console.log(snapshot.docs);
+      });
+    }
+    loadCars();
+  }, []);
+
   return (
     <Container>
       <section className="bg-white p-4 rounded-lg w-full max-w-3xl mx-auto flex justify-center items-center gap-2">
