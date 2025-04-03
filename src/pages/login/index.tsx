@@ -46,7 +46,15 @@ export function Login() {
         navigate("/dashboard", { replace: true });
       })
       .catch(() => {
-        toast.error("Erro ao fazer login, verifique seus dados novamente!");
+        toast.error(
+          "Erro ao fazer login, verifique seus dados e tente novamente!",
+          {
+            style: {
+              backgroundColor: "black",
+              color: "white",
+            },
+          }
+        );
       });
   }
 

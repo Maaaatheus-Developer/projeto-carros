@@ -66,7 +66,13 @@ export function Register() {
       })
       .catch(() => {
         toast.error(
-          "Ocorreu um erro ao cadastrar sua conta, porfavor tente mais tarde"
+          "Ocorreu um erro ao cadastrar sua conta, porfavor tente mais tarde",
+          {
+            style: {
+              backgroundColor: "black",
+              color: "white",
+            },
+          }
         );
       });
   }
