@@ -13,6 +13,7 @@ import {
 } from "firebase/auth";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
+import toast from "react-hot-toast";
 
 const schema = z.object({
   name: z.string().nonempty("O campo nome é obrigatório"),
@@ -59,13 +60,14 @@ export function Register() {
           email: data.email,
           uid: user.user.uid,
         });
+        toast.success("Sua conta foi cadastrada com sucesso!");
 
-        console.log("Cadastrado com sucesso");
         navigate("/dashboard", { replace: true });
       })
-      .catch((error) => {
-        console.log("erro ao cadastrar usuário");
-        console.log(error);
+      .catch(() => {
+        toast.error(
+          "Ocorreu um erro ao cadastrar sua conta, porfavor tente mais tarde"
+        );
       });
   }
 

@@ -1,7 +1,6 @@
 import { ChangeEvent, useState, useContext } from "react";
 import { Container } from "../../../components/container";
 import { DashboardHeader } from "../../../components/panelheader";
-
 import { FiUpload, FiTrash } from "react-icons/fi";
 import { useForm } from "react-hook-form";
 import { Input } from "../../../components/input";
@@ -9,7 +8,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { v4 as uuidV4 } from "uuid";
-
 import { storage, db } from "../../../services/firebaseConnection";
 import {
   ref,
@@ -18,6 +16,7 @@ import {
   deleteObject,
 } from "firebase/storage";
 import { addDoc, collection } from "firebase/firestore";
+import toast from "react-hot-toast";
 
 const schema = z.object({
   name: z.string().nonempty("O campo nome é obrigatório"),
@@ -25,10 +24,12 @@ const schema = z.object({
   year: z.string().nonempty("O Ano do carro é obrigatório"),
   km: z.string().nonempty("O KM do carro é obrigatório"),
   price: z.string().nonempty("O preço é obrigatório"),
+
   city: z.string().nonempty("A cidade é obrigatória"),
   whatsapp: z
     .string()
     .min(1, "O Telefone é obrigatório")
+
     .refine((value) => /^(\d{11,12})$/.test(value), {
       message: "Numero de telefone invalido.",
     }),
@@ -97,7 +98,10 @@ export function New() {
 
   function onSubmit(data: FormData) {
     if (carImages.length === 0) {
-      alert("Envie alguma imagem deste carro!");
+      toast("Envie pelo menos uma imagem", {
+        icon: "⚠",
+        style: { backgroundColor: "black", color: "white", fontSize: "20px" },
+      });
       return;
     }
 
@@ -110,7 +114,7 @@ export function New() {
     });
 
     addDoc(collection(db, "cars"), {
-      name: data.name,
+      name: data.name.toUpperCase(),
       model: data.model,
       whatsapp: data.whatsapp,
       city: data.city,
@@ -142,8 +146,9 @@ export function New() {
     try {
       await deleteObject(imageRef);
       setCarImages(carImages.filter((car) => car.url !== item.url));
+      toast.success("Imagem removida com sucesso!");
     } catch (err) {
-      console.log("ERRO AO DELETAR");
+      toast.error("Ocorreu um erro ao deletar sua imagem");
     }
   }
 
